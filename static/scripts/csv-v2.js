@@ -3,7 +3,7 @@ let debugExport = false;
 if (!debugExport) console.log( 'Set the "debugExport" variable to true in  "static/scripts/csv-v2.js" to enable data output debugging in the console.' );
 var expansionCoef = 0.002195 // approx amount of degrees = 800 ft
 var csv = [
-  ["name of area", "start date", "start time", "end date", "end time", "duration (hrs)", "total time for week (hrs)"]
+  ["week", "day", "date", "time", "area", "place", "end", "time", "duration"]
 ];
 weekMarkMS = 0;
 
@@ -97,7 +97,7 @@ $('#submitProcess').on('click', function () {
   }
 
   var infoArray = [
-    ["name of area", "start date", "start time", "end date", "end time", "duration (hrs)", "total time for week (hrs)"]
+    ["week", "day", "date", "time", "area", "place", "end", "time", "duration"]
   ];
   weekEntries.forEach((i) => {
     var timeTotal = 0;
@@ -108,7 +108,7 @@ $('#submitProcess').on('click', function () {
         infoArray.push(formatEntry(i));
       }
     });
-    infoArray.push(formatEntry(timeTotal, true))
+    //infoArray.push(formatEntry(timeTotal, true))
   });
 
   var lineArray = [];
@@ -136,7 +136,7 @@ $('#submitProcess').on('click', function () {
       } else {
         lineArray = [];
         infoArray = [
-          ["name of area", "start date", "start time", "end date", "end time", "duration (hrs)", "total time for week (hrs)"]
+          ["week", "day", "date", "time", "area", "place", "end", "time", "duration"]
         ];
         weekMarkMS = 0;
       }
@@ -144,15 +144,37 @@ $('#submitProcess').on('click', function () {
 
   function formatEntry(entry, isSum = false) {
     if (!isSum) {
-      var { start, end, box } = entry;
-      var startDate = moment.unix(start / 1000).format('MM-DD-YYYY');;
-      var startTime = moment.unix(start / 1000).format('HH:mm');
-      var endDate = moment.unix(end / 1000).format('MM-DD-YYYY');
-      var endTime = moment.unix(end / 1000).format('HH:mm');
-      var duration = (end - start) / (1000 * 3600)
-      return [box, startDate, startTime, endDate, endTime, duration, '']
+      var { name, start, end, box } = entry;
+      let startMoment = moment.unix(start / 1000);
+      if ( box ) {
+        if ( box.indexOf(',') ) { box = '"' + box + '"'; }
+      }
+      let place = '';
+      if ( name ) {
+        if ( name.indexOf(',') ) { place = '"' + name + '"'; } else { place = name; }
+      }
+      let endMoment = moment.unix(end / 1000);
+      let weekMoment = startMoment.clone().weekday(0);
+      let momentDuration = moment.duration( endMoment.diff( startMoment ) );
+      let durationHours   = (momentDuration._data.days * 24) + momentDuration._data.hours;
+      let durationMinutes = (durationHours * 60) + momentDuration._data.minutes;
+      return [
+        weekMoment.format('MM/DD/YYYY'),
+        startMoment.format('ddd'),
+        startMoment.format('MM/DD'),
+        startMoment.format('h:mm a'),
+        box,
+        place,
+        endMoment.format('MM/DD'),
+        endMoment.format('h:mm a'),
+        durationMinutes
+      ];
     } else {
-      return [, , , , , , entry / (1000 * 3600)]
+      let days  = entry / (1000 * 60 * 60 * 24);
+      let wholeDays = Math.floor( days );
+      let hours = Math.floor( (days*24)%24 );
+      let mins  = Math.floor( ( ((days*24)%24) *60) %60 );
+      return [, , , , , , wholeDays + 'd ' + hours + 'h ' + mins + 'm' ];
     }
   }
 
