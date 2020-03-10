@@ -1,226 +1,204 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <title>Map Upload</title>
-   </head>
-   <body>
-      <meta charset="utf-8">
-      <meta content="width=device-width, initial-scale=1.0" name="viewport">
-      <!-- import basic jquery + bootstrap --> 
-      <script src="static/scripts/lib/jquery.min.js"></script>
-      <link href="static/styles/bootstrap.min.css" rel="stylesheet">
-      <script src="static/scripts/lib/bootstrap.min.js"></script>
-      <link href="static/styles/bootstrap-select.min.css" rel="stylesheet">
-      <script src="static/scripts/lib/bootstrap-select.min.js"></script>
+  <head>
+    <title>Location History Parser</title>
+  </head>
+  <body>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <!-- import basic jquery + bootstrap -->
+    <script src="static/scripts/lib/jquery.min.js"></script>
+    <link href="static/styles/bootstrap.min.css" rel="stylesheet">
+    <script src="static/scripts/lib/bootstrap.min.js"></script>
+    <link href="static/styles/bootstrap-select.min.css" rel="stylesheet">
+    <script src="static/scripts/lib/bootstrap-select.min.js"></script>
 
-      <!-- import leaflet scripts -->  
-      <link href="static/styles/leaflet.css" rel="stylesheet">
-      <script src="static/scripts/lib/leaflet.js"></script>
+    <!-- import leaflet scripts -->
+    <link href="static/styles/leaflet.css" rel="stylesheet">
+    <script src="static/scripts/lib/leaflet.js"></script>
 
-      <!-- import map helper scripts -->
-      <script src="static/scripts/lib/prunecluster.js"></script>
-      <script src="static/scripts/lib/simpleshape.js"></script>
-      <script src="static/scripts/lib/rectangle.js"></script>
-      <script src="static/scripts/lib/bootbox.min.js"></script>
-      
-      <!-- import json parser -->
-      <script src="static/scripts/lib/oboe.min.js"></script>
-      
-      <!-- import time (moment) and sweet alert (swal) -->
-      <script src="static/scripts/lib/moment.min.js"></script>
-      <script src="static/scripts/lib/swal.js"></script>
-      <link href="static/styles/swal.css" rel="stylesheet">
+    <!-- import map helper scripts -->
+    <script src="static/scripts/lib/prunecluster.js"></script>
+    <script src="static/scripts/lib/simpleshape.js"></script>
+    <script src="static/scripts/lib/rectangle.js"></script>
+    <script src="static/scripts/lib/bootbox.min.js"></script>
 
-      <!-- modal --> 
-      <script src="static/scripts/lib/multi-step-modal.js"></script>
-      <link rel="stylesheet" type="text/css" href="static/styles/main.css">
+    <!-- import json parser -->
+    <script src="static/scripts/lib/oboe.min.js"></script>
 
-      <div class="container-fluid">
-         <div class="row">
-            <div class="col-md-4" id="upload">
-               <div id="intro">
-                  <h1>Location History Analyzer</h1>
-                  <h2>An open source tool to quickly organize millions of Google location history points by bounding box into a single spreadsheet with weekly summaries. </h2>
-                  <p> Concept by <span id="cls"><a>Community Legal Services</a></span> <br> Coded by <span id="hack4impact"> <a>Hack4Impact</a></span><br>
-                  View the code source on <a href="https://github.com/hack4impact/cls" target="_blank">Github.com</a></p>
-                <div class="col-md-6">
-                  <button class="btn btn-success" id="step-0-cont" style="width: 100%">Get Started</button>
-                </div>
-                <div class="col-md-6">
-                  <a class="btn btn-info" href="about.html" style="width: 100%">About</a>
-                </div>
-                  
-                  
+    <!-- import time (moment) and sweet alert (swal) -->
+    <script src="static/scripts/lib/moment.min.js"></script>
+    <script src="static/scripts/lib/swal.js"></script>
+    <link href="static/styles/swal.css" rel="stylesheet">
 
-                  <script>
-                    $('#step-0-cont').on('click', function() {
-                      $('#step-1').fadeIn(1000);
-                    });
-                    $('#cls').on('click', function() {
-                      swal({
-                        title: "About Community Legal Services",
-                        text: "Community Legal Services (CLS) provides free civil legal assistance to low-income Philadelphians, including victims of wage theft. In some of these cases, workers have no work records, making it difficult for the CLS laywer seeking damages for that employer to win back the full owed sum. In order to help these vulnerable workers seek recourse, this app creates a timeline of a person’s work hours at identified locations using their phone’s GPS location history. This processed schedule can then be presented as evidence in court."
-                      })
-                    })
-                    $('#hack4impact').on('click', function() {
-                      swal({
-                        title: "About Hack4Impact",
-                        text: "Hack4Impact (<a href='http://hack4impact.org'>http://hack4impact.org</a>) is a student-run nonprofit that works with other nonprofits to create socially impactful software. In Fall 2016, team members Abhinav Suri (Technical Lead), Krishna Bharathala (Product Manager), Santiago Buenahora, Rachel Hong, Katie Jiang, and Daniel Zhang worked with Community Legal Services on this application",
-                        html: true
-                      })
-                    })
-                  </script>
-               </div>
-               <div id="step-1">
-                  <div class="row">
-                     <div class="col-md-12">
-                        <h3>Step 1: Upload</h3>
-                     </div>
-                  </div>
-                  <div class="row">
-                     <div class="col-md-12">
-                        <p>Please select a valid Google Location Map History file (should be in format of LocationHistory.json) <a href="#upload-instructions-modal" data-toggle="modal" data-target="#upload-instructions-modal"><span onclick="sendEvent(1)" class="glyphicon glyphicon-info-sign upload-instructions" aria-hidden="true"></span></a></p>
-                     </div>
-                     <div class="col-md-12">
-                        <div class="input-group">
-                           <label class="input-group-btn"><span class="btn btn-info">Upload&hellip; <input accept=".json" id="uploadInput" multiple style="display: none;" type="file"></span></label> <input class="form-control" readonly type="text">
-                        </div>
-                     </div>
-                  </div>
-                  <br>
-                  <div class="row">
-                     <div class="col-md-12">
-                        <span style="font-size: 16px">Progress:</span>
-                        <div class="progress">
-                           <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="progress-bar progress-bar-success" id="done" role="progressbar" style="min-width: 2em">
-                              0%
-                           </div>
-                        </div>
-                        <div id="stats"></div>
-                        <br>
-                     </div>
-                  </div>
-               </div>
-               <div id="step-2"> 
-                  <div class="row">
-                     <div class="col-md-12">
-                        <h3>Step 2: Select Bounding Boxes</h3>
-                     </div>
-                     <div class="col-md-12">
-                        <p>A bounding box is an area of interest. Click "New Box" and drag to select an area to create a new bounding box on the map. 
-                          <a href="#bounding-instructions-modal" data-toggle="modal" data-target="#bounding-instructions-modal"><span onclick="sendBEvent(1)" class="glyphicon glyphicon-info-sign upload-instructions" aria-hidden="true"></span></a></p>
-                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="input-group">
-                        <button class="btn btn-info" id="newBoxButton">New Box</button> &nbsp;&nbsp;&nbsp; <button class="btn btn-danger" id="cancel">Cancel</button>
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <table class="table" id="locationTable">
-                        <thead>
-                          <tr>
-                            <td></td>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                  <br>
-               <div id="step-3">
-                  <div class="row">
-                     <div class="col-md-12">
-                        <h3>Step 3: Submit</h3>
-                        <p>We'll look at the bounding boxes and return a CSV of all time ranges spent in those bounding boxes based on the location data.</p> 
+    <!-- modal -->
+    <script src="static/scripts/lib/multi-step-modal.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/styles/main.css">
 
-                     </div>
-                  </div>
-                  <div class="row">
-                     <div class="col-md-12">
-                        <div class="form-group">
-                           <label for="filename">Name your file:</label> <input class="form-control" id="filename" type="text" value="Work Location History">
-                        </div>
-                     </div>
-                  </div>
-                  <div class="row">
-                     <div class="col-md-12">
-                        <div class="form-group">
-                           <label for="startDay">Start Day of Week:</label>
-                           <select class="selectpicker" id="startDay">
-                              <option value="1">
-                                 Monday 
-                              </option>
-                              <option value="2">
-                                 Tuesday 
-                              </option>
-                              <option value="3">
-                                 Wednesday 
-                              </option>
-                              <option value="4">
-                                 Thursday 
-                              </option>
-                              <option value="5">
-                                 Friday 
-                              </option>
-                              <option value="6">
-                                 Saturday 
-                              </option>
-                              <option value="7" selected>
-                                 Sunday 
-                              </option>
-                           </select>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="form-check">
-                    <label class="form-check-label">
-                      <input class="form-check-input" id="expanded" type="checkbox" value="">
-                      Include 800ft extra on all sides of bounding box (recommended for usage in city areas)
-                    </label>
-                  </div>
-                  <div class="row">
-                     <div class="col-md-12">
-                        <button class="btn btn-success" id="submitProcess" style="width: 100%">Submit for processing</button>
-                     </div>
-                  </div>
-               </div>
-               <br>
-               <br>
-               <br>
-            </div>
-            <div class="col-md-8">
-              <div class="notif">
-                <button class="btn btn-success" id="instruction">Click and Drag to select a bounding box</button>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4" id="upload">
+          <div id="intro">
+            <h1>Location History Analyzer <span id="introInfoToggle" class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></h1>
+            <div id="introInfo">
+              <h2 class="margin-top-0">An open source tool to quickly organize millions of Google location history points by bounding box into a single spreadsheet with weekly summaries.</h2>
+              <p>
+                Concept by <span id="cls"><a>Community Legal Services</a></span> <br> Coded by <span id="hack4impact"> <a>Hack4Impact</a></span><br>
+                View the code source on <a href="https://github.com/hack4impact/cls" target="_blank">Github.com</a>
+              </p>
+              <div class="col-md-6">
+                <a class="btn btn-info" href="about.html" style="width: 100%">About</a>
               </div>
-              <div id="mapid"></div>
             </div>
-         </div>
+          </div>
+          <div id="step-1">
+            <div class="row">
+              <div class="col-md-12">
+                <h3>Step 1: Select Data File(s)</h3>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <p>
+                  Select a valid Google Location History file <a href="#upload-instructions-modal" data-toggle="modal" data-target="#upload-instructions-modal"><small onclick="sendEvent(1)" class="glyphicon glyphicon-info-sign upload-instructions" aria-hidden="true"></small></a><br/>
+                </p>
+                <p class="small">Your Location History file is NOT uploaded to any server - the data is processed on your computer.</p>
+              </div>
+              <div class="col-md-12">
+                <div class="input-group">
+                  <label class="input-group-btn"><span class="btn btn-info">Select&hellip; <input accept=".json" id="uploadInput" multiple style="display: none;" type="file"></span></label> <input class="form-control" readonly type="text">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <span style="font-size: 16px">Progress:</span>
+                <div class="progress">
+                  <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="progress-bar progress-bar-success" id="done" role="progressbar" style="min-width: 2em">
+                    0%
+                  </div>
+                </div>
+                <div id="stats"></div>
+              </div>
+            </div>
+          </div>
+          <div id="step-2">
+            <div class="row">
+              <div class="col-md-12">
+                <h3>Step 2: Bounding Boxes</h3>
+              </div>
+              <div class="col-md-12">
+                <p>
+                  Click "New Box", then select an area of interest on the map.
+                  <a href="#bounding-instructions-modal" data-toggle="modal" data-target="#bounding-instructions-modal"><small class="glyphicon glyphicon-info-sign upload-instructions" aria-hidden="true"></small></a>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="input-group">
+                  <button class="btn btn-info" id="newBoxButton">New Box</button> &nbsp;&nbsp;&nbsp; <button class="btn btn-danger" id="cancel">Cancel</button>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <table class="table" id="locationTable">
+                  <thead>
+                    <tr>
+                      <td></td>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div id="step-3">
+            <div class="row">
+              <div class="col-md-12">
+                <h3>Step 3: Generate CSV</h3>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="filename">Name your file:</label> <input class="form-control" id="filename" type="text" value="Work Location History">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="startDay">Start Day of Week:</label>
+                  <select class="selectpicker" id="startDay">
+                    <option value="1">
+                      Monday
+                    </option>
+                    <option value="2">
+                      Tuesday
+                    </option>
+                    <option value="3">
+                      Wednesday
+                    </option>
+                    <option value="4">
+                      Thursday
+                    </option>
+                    <option value="5">
+                      Friday
+                    </option>
+                    <option value="6">
+                      Saturday
+                    </option>
+                    <option value="7" selected>
+                      Sunday
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" id="expanded" type="checkbox" value="">
+                Include 800ft extra on all sides of bounding box<br/>
+                <small>(recommended for usage in city areas)</small>
+              </label>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-success" id="submitProcess" style="width: 100%">Submit for processing</button>
+              </div>
+            </div>
+          </div>
+          <br/>
+        </div>
+        <div class="col-md-8 no-padding">
+          <div class="notif">
+            <button class="btn btn-success" id="instruction">Click and Drag to select a bounding box</button>
+          </div>
+          <div id="mapid"></div>
+        </div>
       </div>
+    </div>
 
 
-      <!-- Modal stuff -->
-      <form class="modal multi-step" id="upload-instructions-modal">
+    <!-- Modal stuff -->
+    <form class="modal multi-step" id="upload-instructions-modal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title step-1" data-step="1">Step 1</h4>
-            <h4 class="modal-title step-2" data-step="2">Step 2</h4>
-            <h4 class="modal-title step-3" data-step="3">Step 3</h4>
-            <h4 class="modal-title step-4" data-step="4">Step 4</h4>
-            <h4 class="modal-title step-5" data-step="5">Step 5</h4>
+            <h4 class="modal-title">How to download your Google Location History</h4>
           </div>
           <div class="modal-body step step-1">
+            <h4 class="modal-title step-1" data-step="1">Step 1</h4>
             <p>Sign into the Google account linked to your Android device. Go to <a href="https://takeout.google.com/settings/takeout" target="_blank">takeout.google.com/settings/takeout.</a></p>
           </div>
           <div class="modal-body step step-2">
+            <h4 class="modal-title step-2" data-step="2">Step 2</h4>
             <p>Click "Select none."
             <br>
-            <img class="tutorial-img" src="static/images/takeout-screenshots/select-none.png" /></p>
+            <img class="tutorial-img shadow" src="static/images/takeout-screenshots/select-none.png" /></p>
           </div>
           <div class="modal-body step step-3">
+            <h4 class="modal-title step-3" data-step="3">Step 3</h4>
             <p>Select Location History. Make sure it is set to JSON format.
             <br>
             <img class="tutorial-img" src="static/images/takeout-screenshots/select-location.png" />
@@ -228,21 +206,19 @@
             Click next.</p>
           </div>
           <div class="modal-body step step-4">
+            <h4 class="modal-title step-4" data-step="4">Step 4</h4>
             <p>Choose the format as follows.
             <br>
             <img class="tutorial-img" src="static/images/takeout-screenshots/choose-format.png" />
             Create archive.</p>
           </div>
           <div class="modal-body step step-5">
+            <h4 class="modal-title step-5" data-step="5">Step 5</h4>
             <p>Unzip/Unarchive and extract the resulting downloaded .zip file. Open the "Location History" folder and move the "LocationHistory.json" file to a known place. <b> You'll be using this file for the upload process</b>
             <br>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-info step step-1" data-step="1" onclick="sendEvent(2)">Continue</button>
-            <button type="button" class="btn btn-info step step-2" data-step="2" onclick="sendEvent(3)">Continue</button>
-            <button type="button" class="btn btn-info step step-3" data-step="3" onclick="sendEvent(4)">Continue</button>
-            <button type="button" class="btn btn-info step step-4" data-step="4" onclick="sendEvent(5)">Continue</button>
           </div>
         </div>
       </div>
@@ -251,39 +227,52 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title step-1" data-step="1">Step 1</h4>
-            <h4 class="modal-title step-2" data-step="2">Step 2</h4>
+            <h4 class="modal-title>How to select a bounding box</h4>
           </div>
           <div class="modal-body step step-1">
+            <h4 class="modal-title step-1" data-step="1">Step 1</h4>
             <p>Click and drag the edges of the bounding box.
             <br>
             <img class="tutorial-img" src="static/images/takeout-screenshots/bounding-box.gif" /></p>
           </div>
           <div class="modal-body step step-2">
+            <h4 class="modal-title step-2" data-step="2">Step 2</h4>
             <p>Name the area covered by the box.
             <br>
             <img class="tutorial-img" src="static/images/takeout-screenshots/area-name.png" /></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-info step step-1" data-step="1" onclick="sendBEvent(2)">Continue</button>
           </div>
         </div>
       </div>
     </form>
-      <!-- map, upload, and csv custom scripts -->
+
+    <!-- map, upload, and csv custom scripts -->
     <script src="static/scripts/map.js"></script>
     <script src="static/scripts/upload.js"></script>
     <script src="static/scripts/csv-v2.js"></script>
-      
+
     <script>
-      sendEvent = function(x) {
-          $('#upload-instructions-modal').trigger('next.m.' + x);
-      }
-      sendBEvent = function(x) {
-          $('#bounding-instructions-modal').trigger('next.m.' + x);
-      }
+      $('#introInfoToggle').on('click', function() {
+        $('#introInfo').slideToggle();
+      });
+      $('#step-1').fadeIn(1000);
+      $('#cls').on('click', function() {
+        swal({
+          title: "About Community Legal Services",
+          text: "Community Legal Services (CLS) provides free civil legal assistance to low-income Philadelphians, including victims of wage theft. In some of these cases, workers have no work records, making it difficult for the CLS laywer seeking damages for that employer to win back the full owed sum. In order to help these vulnerable workers seek recourse, this app creates a timeline of a person’s work hours at identified locations using their phone’s GPS location history. This processed schedule can then be presented as evidence in court."
+        })
+      })
+      $('#hack4impact').on('click', function() {
+        swal({
+          title: "About Hack4Impact",
+          text: "Hack4Impact (<a href='http://hack4impact.org'>http://hack4impact.org</a>) is a student-run nonprofit that works with other nonprofits to create socially impactful software. In Fall 2016, team members Abhinav Suri (Technical Lead), Krishna Bharathala (Product Manager), Santiago Buenahora, Rachel Hong, Katie Jiang, and Daniel Zhang worked with Community Legal Services on this application",
+          html: true
+        })
+      })
+
     </script>
 
-    </body>
+  </body>
 </html>

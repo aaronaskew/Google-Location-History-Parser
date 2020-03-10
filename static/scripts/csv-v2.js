@@ -129,6 +129,7 @@ $('#submitProcess').on('click', function () {
       title: "Your file has been created",
       text: '<div class="resultsTable">' + table + '</dv>',
       type: "success",
+      customClass: 'swal-wide',
       html: true,
       showCancelButton: true,
       closeOnConfirm: false,

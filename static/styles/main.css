@@ -34,6 +34,23 @@ body {
   border-bottom: 0px
 }
 
+.swal-wide {
+  left: 10vw !important;
+  margin-left: auto !important;
+  width: 80vw !important;
+}
+.resultsTable {
+  height: 200px;
+  margin: auto;
+  overflow: auto;
+}
+.resultsTable table {
+  margin: auto;
+}
+.resultsTable td {
+  font-size: 10px;
+}
+
 
 #upload {
   background-color: #FFF;
@@ -44,13 +61,9 @@ body {
   padding-right: 25px;
   min-height: 100vh;
   overflow-x: hidden;
-  overflow-y: scroll
+  overflow-y: auto;
 }
 
-::-webkit-scrollbar {
-    width: 0px;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
-}
 
 .notif {
   position: absolute;
@@ -83,15 +96,15 @@ body {
 }
 
 #step-1 {
-  display: none; 
+  display: none;
 }
 
 #step-2 {
-   display: none; 
+   display: none;
 }
 
 #step-3 {
-  display: none; 
+  display: none;
 }
 
 .form-control {
@@ -114,20 +127,38 @@ body {
 
 h1 {
   font-family: 'HKGroteskBold', 'Arial';
+  font-size: 32px;
 }
-
 h2 {
-  font-size: 28px;
+  font-size: 24px;
 }
 h3 {
   font-family: 'HKGroteskBold', 'Arial';
-  font-size: 28px;
+  font-size: 22px;
+}
+h4 {
+  font-size: 20px;
+  font-weight: bold;
 }
 
-
-
 p {
-  font-size: 18px
+  font-size: 18px;
+  line-height: 1.2em;
+}
+
+.no-padding {
+  padding: 0;
+}
+.margin-top-0 {
+  margin-top: 0;
+}
+
+#introInfoToggle {
+  cursor: pointer;
+  font-size: 0.5em;
+}
+#introInfo {
+  display: none;
 }
 
 @media -sass-debug-info{filename{}line{font-family:\000037}}
@@ -158,79 +189,82 @@ table.selectable tr:hover {
 }
 
 .prunecluster {
-    font-size: 12px;
-    border-radius: 20px;
-    transition: all 0.3s linear;
+  font-size: 12px;
+  border-radius: 20px;
+  transition: all 0.3s linear;
 }
 
 .leaflet-marker-icon.prunecluster-anim,
 .leaflet-marker-shadow.prunecluster-anim,
 .leaflet-markercluster-icon.prunecluster-anim {
-    transition: all 0.3s linear;
+  transition: all 0.3s linear;
 }
 
 .leaflet-zoom-anim .leaflet-zoom-animated.leaflet-marker-icon,
 .leaflet-zoom-anim .leaflet-zoom-animated.leaflet-marker-shadow,
 .leaflet-zoom-anim .leaflet-zoom-animated.leaflet-markercluster-icon {
-    transition: transform 0.25s cubic-bezier(0,0,0.25,1);
+  transition: transform 0.25s cubic-bezier(0,0,0.25,1);
 }
 
 .prunecluster div {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    margin-left: 5px;
-    margin-top: 5px;
-    border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  margin-left: 5px;
+  margin-top: 5px;
+  border-radius: 50%;
 }
 
 .prunecluster div span {
-    line-height: 30px;
+  line-height: 30px;
 }
 
 .prunecluster-small {
-    background-color: #b5e28c;
-    background-color: rgba(181, 226, 140, 0.6);
+  background-color: #b5e28c;
+  background-color: rgba(181, 226, 140, 0.6);
 }
 
 .prunecluster-small div {
-    width: 28px;
-    height: 28px;
-    background-color: #6ecc39;
-    background-color: rgba(110, 204, 57, 0.6);
+  width: 28px;
+  height: 28px;
+  background-color: #6ecc39;
+  background-color: rgba(110, 204, 57, 0.6);
 }
 
 .prunecluster-small div span {
-    line-height: 28px;
+  line-height: 28px;
 }
 
 .prunecluster-medium {
-    background-color: #f1d357;
-    background-color: rgba(241, 211, 87, 0.6);
+  background-color: #f1d357;
+  background-color: rgba(241, 211, 87, 0.6);
 }
 
 .prunecluster-medium div {
-    background-color: #f0c20c;
-    background-color: rgba(240, 194, 12, 0.6);
+  background-color: #f0c20c;
+  background-color: rgba(240, 194, 12, 0.6);
 }
 
 .prunecluster-large {
-    background-color: #fd9c73;
-    background-color: rgba(253, 156, 115, 0.6);
+  background-color: #fd9c73;
+  background-color: rgba(253, 156, 115, 0.6);
 }
 
 .prunecluster-large div {
-    width: 34px;
-    height: 34px;
-    background-color: #f18017;
-    background-color: rgba(241, 128, 23, 0.6);
+  width: 34px;
+  height: 34px;
+  background-color: #f18017;
+  background-color: rgba(241, 128, 23, 0.6);
 }
 
 .prunecluster-large div span {
-    line-height: 34px;
+  line-height: 34px;
 }
 
 .tutorial-img {
-    width: 100%;
-    padding: 10px 5px;
+  margin: 10px 5px;
+  width: 100%;
+}
+.tutorial-img.shadow {
+  box-shadow: 0px 0px 10px #ccc;
 }
