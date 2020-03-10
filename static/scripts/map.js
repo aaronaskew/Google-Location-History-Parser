@@ -1,6 +1,6 @@
 /* INITIALIZE MAP */
 var mymap = L.map('mapid', {
-  scrollWheelZoom: false,
+  scrollWheelZoom: true,
   zoomControl: false
 }).setView([39.9526, -75.163], 3);
 
@@ -48,10 +48,11 @@ function mousemoveMap(e) {
 
 
 /* HANDLE MAKING CHANGES TO THE TABLE FOR SHOWING BOXES */
+let boxCount = 1;
 function createBox(name) {
   if (name) {
     $('#step-3').fadeIn(1000);
-    
+
     boxes[currentBox._leaflet_id] = {
       'name': name,
       'rectangle': currentBox,
@@ -87,6 +88,7 @@ function createBox(name) {
 
     currentBox.bindPopup(name).openPopup();
     currentBox.editing.enable();
+    boxCount++;
   } else {
     currentBox.remove();
   }
@@ -124,8 +126,8 @@ function mouseupMap(e) {
     currentBox.addTo(mymap);
     boxPane = currentBox.getPane();
 
-    bootbox.prompt('Give this location a name', createBox);
-    $('.bootbox-input').attr('placeholder', 'e.g. Daily work location');
+    bootbox.prompt('Give this location a name (ex: Daily work location)', createBox);
+    $('.bootbox-input').val('area'+boxCount);
     mymap.dragging.enable();
     newBoxMode = false;
     clicking = false;
