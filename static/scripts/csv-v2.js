@@ -112,11 +112,14 @@ $('#submitProcess').on('click', function () {
   });
 
   var lineArray = [];
+  let table = '<table>';
   infoArray.forEach(function (infoArray, index) {
     var line = infoArray.join(",");
     lineArray.push(index == 0 ? "data:text/csv;charset=utf-8," + line : line);
+    table += '<tr><td>' + infoArray.join('</td><td>') + '</td></tr>';
   });
   var encodedUri = lineArray.join("\n");
+  table += '</table>';
 
   var link = document.createElement("a");
   link.setAttribute("href", encodedUri);
@@ -124,6 +127,7 @@ $('#submitProcess').on('click', function () {
   document.body.appendChild(link);
   swal({
       title: "Your file has been created",
+      text: '<div class="resultsTable">' + table + '</dv>',
       type: "success",
       html: true,
       showCancelButton: true,
