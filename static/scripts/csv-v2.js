@@ -1,4 +1,6 @@
 // INIT CSV
+let debugExport = false;
+if (!debugExport) console.log( 'Set the "debugExport" variable to true in  "static/scripts/csv-v2.js" to enable data output debugging in the console.' );
 var expansionCoef = 0.002195 // approx amount of degrees = 800 ft
 var csv = [
   ["name of area", "start date", "start time", "end date", "end time", "duration (hrs)", "total time for week (hrs)"]
@@ -27,32 +29,20 @@ $('#submitProcess').on('click', function () {
     }
     return (lat <= neLat && lat >= swLat && lng <= neLng && lng >= swLng);
   }
+
   // create array with all segments
   var prevBox = null
   var res = []
   var markers  = [...lv.GetMarkers()]
   var sortedMarkers = markers.sort((a, b) => a.data.timestamp - b.data.timestamp)
-  var seg = { start: sortedMarkers[0].data.timestamp, end: sortedMarkers[0].data.timestamp, box: prevBox }
   sortedMarkers.forEach((i, idx) => {
-    var a = boxbounds.filter(j => isInBox(Number(i.position.lat), Number(i.position.lng), j));
-    var currBox = a[0] ? a[0].name : null;
-    if (idx == markers.length -1) {
-      seg.end = i.data.timestamp;
-      res.push(seg);
-      return;
-    }
-    if (currBox == prevBox) {
-      seg.end = i.data.timestamp;
-    }
-    if (currBox != prevBox) {
-      // assume you are in prevBox until you aren't
-      res.push(seg);
-      prevBox = currBox;
-      seg = { start: i.data.timestamp, end: i.data.timestamp, box: prevBox }
-    }
+    let boundary = boxbounds.filter(j => isInBox(Number(i.position.lat), Number(i.position.lng), j));
+    var currBox = boundary[0] ? boundary[0].name : null;
+    var seg = { name: i.data.name, start: i.data.timestamp, end: i.data.timestamp2, box: currBox }
+    res.push(seg);
   })
   res = res.filter(i => i.start)
-  console.log(res);
+  if (debugExport) console.log({'results':res});
   // make CSV
   var weekStart = moment.unix(res[0].start / 1000).weekday(Number($('#startDay').val()) * -1).unix() * 1000;
   var weekSpan = 604800000
@@ -127,7 +117,7 @@ $('#submitProcess').on('click', function () {
     lineArray.push(index == 0 ? "data:text/csv;charset=utf-8," + line : line);
   });
   var encodedUri = lineArray.join("\n");
-   
+
   var link = document.createElement("a");
   link.setAttribute("href", encodedUri);
   link.setAttribute("download", "" + $("#filename").val() + ".csv");
